@@ -11,4 +11,5 @@ export function ImageGalleryItem({ imageURL, tags, onClick }) {
 ImageGalleryItem.propTypes = {
   imageURL: PropTypes.string.isRequired,
   tags: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
 };

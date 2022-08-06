@@ -7,7 +7,7 @@ export class App extends Component {
     query: '',
     page: 1,
     images: [],
-    modalImage: '',
+    modalInfo: {},
     error: null,
     isLoading: false,
     isOpenModal: false,
@@ -31,15 +31,18 @@ export class App extends Component {
     }
   };
 
-  onClickImage = imgUrl => {
+  onClickImage = obj => {
     this.setState({
-      modalImage: imgUrl,
+      modalInfo: { ...obj },
       isOpenModal: true,
     });
   };
 
   onCloseModal = () => {
-    this.setState({ isOpenModal: false });
+    this.setState({
+      isOpenModal: false,
+      modalInfo: {},
+    });
   };
 
   onSubmit = value => {
@@ -55,7 +58,12 @@ export class App extends Component {
   };
 
   render() {
-    const { images, isLoading, isOpenModal, modalImage } = this.state;
+    const {
+      images,
+      isLoading,
+      isOpenModal,
+      modalInfo: { largeImageURL, tags },
+    } = this.state;
 
     const loadMoreBtn = isLoading ? (
       <Loader />
@@ -65,7 +73,7 @@ export class App extends Component {
 
     const openModal = (
       <Modal onClose={this.onCloseModal}>
-        <img src={modalImage} alt="{tags}" />
+        <img src={largeImageURL} alt={tags} />
       </Modal>
     );
 
