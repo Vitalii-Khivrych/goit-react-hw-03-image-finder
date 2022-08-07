@@ -5,7 +5,7 @@ export const Loader = () => {
   return (
     <LoaderWrap>
       <Circles
-        color="teal"
+        color=" #303f9f"
         height="50"
         width="50"
         ariaLabel="three-dots-loading"

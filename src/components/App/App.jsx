@@ -1,7 +1,19 @@
 import React, { Component } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import api from '../../helpers/apiService';
 import { SearchBar, ImageGallery, Button, Loader, Modal } from 'components';
 import { AppWrap } from './App.styled';
+
+const optionsNotify = {
+  position: 'top-right',
+  autoClose: 3000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+};
 
 export class App extends Component {
   state = {
@@ -28,8 +40,20 @@ export class App extends Component {
           images: [...prevState.images, ...response.hits],
           totalHits: response.totalHits,
         }));
+
+        if (page === 1 && response.total !== 0)
+          toast.success(
+            `Hooray! We found ${response.total} images.`,
+            optionsNotify
+          );
+
+        if (response.total === 0)
+          toast.warn(
+            `Search for ${query} did not find anything. Try again`,
+            optionsNotify
+          );
       } catch (error) {
-        this.setState({ error });
+        this.setState({ error: error.message });
       }
 
       this.setState({ isLoading: false });
@@ -52,6 +76,7 @@ export class App extends Component {
 
   onSubmit = value => {
     if (value.trim() === '') {
+      toast.warn('Sorry, Empty search. Please try again.', optionsNotify);
       return;
     }
 
@@ -75,10 +100,6 @@ export class App extends Component {
       modalInfo: { largeImageURL, tags },
     } = this.state;
 
-    // console.log(images);
-    // console.log(images.length);
-    // console.log(totalHits);
-
     const isShowBtn =
       images.length !== 0 && images.length !== totalHits && !isLoading;
 
@@ -96,6 +117,19 @@ export class App extends Component {
             <img src={largeImageURL} alt={tags} />
           </Modal>
         )}
+
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme={'colored'}
+        />
       </AppWrap>
     );
   }
