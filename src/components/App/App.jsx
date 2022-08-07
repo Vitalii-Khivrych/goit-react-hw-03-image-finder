@@ -54,9 +54,9 @@ export class App extends Component {
           );
       } catch (error) {
         this.setState({ error: error.message });
+      } finally {
+        this.setState({ isLoading: false });
       }
-
-      this.setState({ isLoading: false });
     }
   };
 
