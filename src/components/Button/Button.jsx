@@ -1,11 +1,11 @@
-// import { Button } from './Button.styled';
 import PropTypes from 'prop-types';
+import { Btn } from './Button.styled';
 
 export function Button({ onClick }) {
   return (
-    <button type="button" onClick={onClick}>
+    <Btn type="button" onClick={onClick}>
       Load More
-    </button>
+    </Btn>
   );
 }
 

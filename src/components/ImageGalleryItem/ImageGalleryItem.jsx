@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
+import { GalleryItem, GalleryImg } from './ImageGalleryItem.styled';
 
 export function ImageGalleryItem({ imageURL, tags, onClick }) {
   return (
-    <li className="gallery-item">
-      <img src={imageURL} alt={tags} onClick={onClick} />
-    </li>
+    <GalleryItem className="gallery-item">
+      <GalleryImg src={imageURL} alt={tags} onClick={onClick} />
+    </GalleryItem>
   );
 }
 

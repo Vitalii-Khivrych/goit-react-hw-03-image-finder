@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Header, Form, Button, Input } from './SearchBar.styled';
+import { BsSearch } from 'react-icons/bs';
 
 export class SearchBar extends Component {
   state = {
@@ -7,7 +9,7 @@ export class SearchBar extends Component {
   };
 
   handleChange = e => {
-    this.setState({ query: e.target.value });
+    this.setState({ query: e.target.value.trim() });
   };
 
   handleSubmit = e => {
@@ -23,13 +25,13 @@ export class SearchBar extends Component {
     const { query } = this.state;
 
     return (
-      <header className="searchBar" onSubmit={this.handleSubmit}>
-        <form className="form">
-          <button type="submit" className="button">
-            <span className="button-label">Search</span>
-          </button>
+      <Header onSubmit={this.handleSubmit}>
+        <Form>
+          <Button type="submit">
+            <BsSearch />
+          </Button>
 
-          <input
+          <Input
             className="input"
             type="text"
             autoComplete="off"
@@ -38,8 +40,8 @@ export class SearchBar extends Component {
             value={query}
             onChange={this.handleChange}
           />
-        </form>
-      </header>
+        </Form>
+      </Header>
     );
   }
 }

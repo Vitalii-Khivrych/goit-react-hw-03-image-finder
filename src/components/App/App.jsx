@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import api from '../../helpers/apiService';
 import { SearchBar, ImageGallery, Button, Loader, Modal } from 'components';
+import { AppWrap } from './App.styled';
 
 export class App extends Component {
   state = {
@@ -8,21 +9,25 @@ export class App extends Component {
     page: 1,
     images: [],
     modalInfo: {},
+    totalHits: null,
     error: null,
     isLoading: false,
     isOpenModal: false,
   };
 
   componentDidUpdate = async (_, prevState) => {
-    const { query, page, isLoading } = this.state;
+    const { query, page } = this.state;
 
     if (prevState.query !== query || prevState.page !== page) {
       this.setState({ isLoading: true });
+
       try {
         const response = await api(query, page);
-        const imagesArr = response.hits;
 
-        this.setState({ images: imagesArr });
+        this.setState(prevState => ({
+          images: [...prevState.images, ...response.hits],
+          totalHits: response.totalHits,
+        }));
       } catch (error) {
         this.setState({ error });
       }
@@ -33,21 +38,25 @@ export class App extends Component {
 
   onClickImage = obj => {
     this.setState({
-      modalInfo: { ...obj },
+      modalInfo: obj,
       isOpenModal: true,
     });
   };
 
   onCloseModal = () => {
     this.setState({
-      isOpenModal: false,
       modalInfo: {},
+      isOpenModal: false,
     });
   };
 
   onSubmit = value => {
-    // const { query } = this.state;
+    if (value.trim() === '') {
+      return;
+    }
+
     this.setState({
+      images: [],
       query: value,
       page: 1,
     });
@@ -62,31 +71,32 @@ export class App extends Component {
       images,
       isLoading,
       isOpenModal,
+      totalHits,
       modalInfo: { largeImageURL, tags },
     } = this.state;
 
-    const loadMoreBtn = isLoading ? (
-      <Loader />
-    ) : (
-      <Button onClick={this.onClickBtnLoadMore} />
-    );
+    // console.log(images);
+    // console.log(images.length);
+    // console.log(totalHits);
 
-    const openModal = (
-      <Modal onClose={this.onCloseModal}>
-        <img src={largeImageURL} alt={tags} />
-      </Modal>
-    );
+    const isShowBtn =
+      images.length !== 0 && images.length !== totalHits && !isLoading;
 
     return (
-      <>
+      <AppWrap>
         <SearchBar onSubmit={this.onSubmit} />
-
         <ImageGallery images={images} getImg={this.onClickImage} />
 
-        {images.length !== 0 && loadMoreBtn}
+        {isLoading && <Loader />}
 
-        {isOpenModal && openModal}
-      </>
+        {isShowBtn && <Button onClick={this.onClickBtnLoadMore} />}
+
+        {isOpenModal && (
+          <Modal onClose={this.onCloseModal}>
+            <img src={largeImageURL} alt={tags} />
+          </Modal>
+        )}
+      </AppWrap>
     );
   }
 }
